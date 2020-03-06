@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.io.wavfile import write
 from math import log10
+import os
 
 def record_audio(duration,fs):
     """Take a recording of sound.
@@ -22,6 +23,7 @@ def record_audio(duration,fs):
 
 def plot_signal(audio,filename):
     """Plot the signal."""
+    filename = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir,'Output_Figures',filename))
     plt.figure(figsize=(11,8))  # Create plot and set size in inches
     plt.plot(audio, color='black')  # Create a plot of the soundwave
     #plt.axis('off')  # Remove axes to leave only waveform for arm to draw

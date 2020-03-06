@@ -15,26 +15,32 @@ import matplotlib.pyplot as plt
 import Audio_Processing
 import G_Code_Generator
 import serial
+import os
 
 class App:
     def __init__(self, window, window_title, video_source=0):
         self.window = window
         self.window.title(window_title)
         self.video_source = video_source
-        self.face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-        self.landmark_model = ("shape_predictor_68_face_landmarks.dat")
+
+        dirname = os.path.dirname(__file__)
+
+        self.face_cascade = cv2.CascadeClassifier(os.path.abspath(os.path.join(dirname,os.pardir,'Machine_Learning_Files','haarcascade_frontalface_default.xml')))
+        self.landmark_model = os.path.abspath(os.path.join(dirname,os.pardir,'Machine_Learning_Files','shape_predictor_68_face_landmarks.dat'))
+
+
         self.detector = dlib.get_frontal_face_detector()
         self.predictor = dlib.shape_predictor(self.landmark_model)
         self.G_Code = tk.StringVar()
 
 #~~~~~~~~~~~~~~
-        self.ser = serial.Serial('COM4', baudrate = 115200, timeout = 1)
-        time.sleep(3)
-        self.ser.reset_input_buffer()
+#        self.ser = serial.Serial('COM3', baudrate = 115200, timeout = 1)
+#        time.sleep(3)
+#        self.ser.reset_input_buffer()
         # ser.write(b'%')
         # time.sleep(1)
-        arduinoData = self.ser.readline().decode('ascii')
-        print(arduinoData)
+#        arduinoData = self.ser.readline().decode('ascii')
+#        print(arduinoData)
 #~~~~~~~~~~~~~~
 
 #        self.fa = FaceAligner(self.predictor, desiredFaceWidth=256)

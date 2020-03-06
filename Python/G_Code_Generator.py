@@ -15,6 +15,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 def choose_units():
     """Set units for program to be in mm or inches"""
@@ -62,6 +63,7 @@ def plot_signal(signal,filename):
     if filename == 'face':
         plt.scatter(signal[:,0], signal[:,1], color='black')  # Create a plot of the signal
     elif filename == 'sound':
+        filename = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir,'Output_Figures',filename))
         plt.plot(signal[:,0], signal[:,1], color='black')  # Create a plot of the signal
     plt.savefig('{}.png'.format(filename), transparent=True, bbox_inches=0, pad_inches=0)  # Save plot as png
 
@@ -69,11 +71,12 @@ def main(mode,array=None):
     """Main function of the program.
     mode = 'sound', 'face', or 'demo'
     array = numpy array conatining x,y coordinates to be plotted"""
+    dirname = os.path.dirname(__file__)
     g_code = []    # List to hold g-code commands
     g_code.append('G20')    # Inches
     g_code.append('G90')    # Absolute mode
     if mode == 'demo':
-        with open('demo.txt') as f: # Read demo g_code from file, remove '\n'
+        with open(os.path.abspath(os.path.join(dirname,os.pardir,'Txt_Docs','demo.txt')),'r+') as f: # Read demo g_code from file, remove '\n'
             g_code += f.read().splitlines()
     elif mode == 'sound':
         array = scale_image(array,8,10)
@@ -86,7 +89,7 @@ def main(mode,array=None):
     plot_signal(array,mode)
 
     # Print the g_code to a text file
-    f = open('gcode.txt', 'w')  #
+    f = open(os.path.abspath(os.path.join(dirname,os.pardir,'Txt_Docs','gcode.txt')),'w')  #
     for i in g_code:
         f.write(str(i) + '\n')
     f.close()
