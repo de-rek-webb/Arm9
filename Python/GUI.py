@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import Audio_Processing
 import G_Code_Generator
 import serial
+import serial.tools.list_ports
 import os
 
 class App:
@@ -95,6 +96,25 @@ class App:
         self.ser.close()
         tk.quit()
 
+    def connect_arduino(self):
+        ports = serial.tools.list_ports.comports()
+        commPort = 'None'
+        numConnection = len(ports)
+
+        for i in range(0,numConnection):
+            port = ports[i]
+            strPort = str(port)
+
+            if 'Arduino' in strPort:
+                splitPort = strPort.split(' ')
+                commPort = (splitPort[0])
+
+        if commPort != 'None':
+            self.ser = serial.Serial(commPort,baudrate = 115200, timeout=1)
+            print('Connected to ' + commPort)
+
+        else:
+            print('Connection Issue!')
 
     def send_code(self,g_code = None):
         """Send g-code line by line over serial port"""
@@ -103,7 +123,6 @@ class App:
             time.sleep(0.5)
             while self.ser.in_waiting:
                 print(self.ser.readline())
-
         return
 
     def demo(self):
