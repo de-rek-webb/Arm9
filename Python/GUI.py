@@ -74,7 +74,8 @@ class App:
 
 
     def close(self):
-        self.ser.close()
+        if self.ser != 'None':
+            self.ser.close()
         tk.quit()
 
     def connect_arduino(self):
