@@ -63,16 +63,8 @@ class App:
         self.btn_send.pack(side = tk.RIGHT)
 
 
-# Serial Communication
-#~~~~~~~~~~~~~~
-#        self.ser = serial.Serial('COM3', baudrate = 115200, timeout = 1)
-#        time.sleep(3)
-#        self.ser.reset_input_buffer()
-        # ser.write(b'%')
-        # time.sleep(1)
-#        arduinoData = self.ser.readline().decode('ascii')
-#        print(arduinoData)
-#~~~~~~~~~~~~~~
+    # Serial Communication
+        self.ser = self.connect_arduino()
 
     # After it is called once, the update method will be automatically called every delay milliseconds
         self.delay=10
@@ -88,22 +80,29 @@ class App:
     def connect_arduino(self):
         ports = serial.tools.list_ports.comports()
         commPort = 'None'
-        numConnection = len(ports)
 
-        for i in range(0,numConnection):
-            port = ports[i]
-            strPort = str(port)
+        for i in range(0,len(ports)):
+            port = str(ports[i])
+            #strPort = str(port)
 
-            if 'Arduino' in strPort:
-                splitPort = strPort.split(' ')
+            if 'Arduino' in port:
+                splitPort = port.split(' ')
                 commPort = (splitPort[0])
 
         if commPort != 'None':
-            self.ser = serial.Serial(commPort,baudrate = 115200, timeout=1)
+            commPort = serial.Serial(commPort,baudrate = 115200, timeout=1)
             print('Connected to ' + commPort)
+            time.sleep(3)
+            commPort.reset_input_buffer()
+            # ser.write(b'%')
+            # time.sleep(1)
+            arduinoData = commPort.readline().decode('ascii')
+            print(arduinoData)
 
         else:
             print('Connection Issue!')
+
+        return commPort
 
     def send_code(self,g_code = None):
         """Send g-code line by line over serial port"""
