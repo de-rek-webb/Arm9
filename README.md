@@ -1,20 +1,23 @@
 "# Arm9"
 
-Make sure you have python
+Make sure you have python 3
 
 Have a text editor; atom, viscose, notepad++, whatever
 
 Have git installed or some graphical git application so you have interact with the repo. Look up tutorials on how to use it. For the most part, you just need to pull from what's there so you can use it.
 
-You're gonna need to install the python libraries that are imported in the GUI.py file. I'll send another text with the right names of those so you have simply run a "pip install___"
+You're gonna need to install the python libraries that are imported in the GUI.py file. Here's how to install each one in windows command line.
   tkinter: already installed
   cv2: pip install opencv-python
-  PIL.Image, PIL.ImageTk:
+  PIL.Image, PIL.ImageTk: pip install pillow
   time: already installed
   datetime: pip install datetime
   argparse: pip install argparse
   imutils: pip install imutils
   dlib:
+    pip install cmake
+    pip install dlib
+    also need to have a c++ complier installed
   numpy: pip install numpy
   matplotlib.pyplot: pip install matplotlib
   serial: pip install pyserial
