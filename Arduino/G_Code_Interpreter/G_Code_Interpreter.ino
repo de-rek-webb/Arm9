@@ -216,7 +216,7 @@ void takeinstructions() {
      
       followinstructions(); //Executes the desired instructions stated in last function based on G code 
 
-      if( currentcode == 0 | currentcode == 1 ){ //Checks to see if it should update position (only for positioning function) 
+      if( currentcode == 0 || currentcode == 1 ){ //Checks to see if it should update position (only for positioning function) 
 
         updatetocurrent();
       }
@@ -442,21 +442,21 @@ void movemotor( int steps, String whichmotor){ //Moves motor by number of steps 
 
     if( whichmotor == "Stepper #1" ){ //Makes sure to step the correct pin
       digitalWrite(STEP_PIN1, HIGH);
-      delayMicroseconds(300);
+      delayMicroseconds(100);
       digitalWrite(STEP_PIN1, LOW);
-      delayMicroseconds(300);
+      delayMicroseconds(100);
       
     }else if( whichmotor == "Stepper #2" ){
       digitalWrite(STEP_PIN2, HIGH);
-      delayMicroseconds(300);
+      delayMicroseconds(100);
       digitalWrite(STEP_PIN2, LOW);
-      delayMicroseconds(300);
+      delayMicroseconds(100);
       
     }else if( whichmotor == "Stepper #3" ){
       digitalWrite(STEP_PIN3, HIGH);
       delayMicroseconds(100);
       digitalWrite(STEP_PIN3, LOW);
-      delayMicroseconds(300);
+      delayMicroseconds(100);
     }
     count++;
     steps--;
@@ -509,7 +509,7 @@ void followinstructions(){
     }
 
     //Loops while current values are not within range of real desired values
-    while( !( ( ( currentx > (realdesiredx - .1) ) && ( currentx < (realdesiredx + .1) ) ) &&  ( ( currenty > (realdesiredy - .1) ) && ( currenty < (realdesiredy + .1) ) ) ) ){
+    while( !( ( ( currentx > (realdesiredx - .6) ) && ( currentx < (realdesiredx + .6) ) ) &&  ( ( currenty > (realdesiredy - .6) ) && ( currenty < (realdesiredy + .6) ) ) ) ){
 
       if( slope >= 1 ){ //Calculates intermediate values based on slope
 
