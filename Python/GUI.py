@@ -84,15 +84,16 @@ class App:
 
         for i in range(0,len(ports)):
             port = str(ports[i])
+            print(port)
             #strPort = str(port)
 
-            if 'Arduino' in port:
+            if 'COM' in port:
                 splitPort = port.split(' ')
                 commPort = (splitPort[0])
 
         if commPort != 'None':
             commPort = serial.Serial(commPort,baudrate = 115200, timeout=1)
-            print('Connected to ' + commPort)
+            print('Connected')
             time.sleep(3)
             commPort.reset_input_buffer()
             # ser.write(b'%')
