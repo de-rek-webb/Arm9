@@ -13,7 +13,7 @@ import numpy as np
 from numpy import newaxis
 import matplotlib.pyplot as plt
 import Audio_Processing
-import Face_Processing
+#import Face_Processing
 import G_Code_Generator
 import serial
 import serial.tools.list_ports
@@ -76,7 +76,7 @@ class App:
     def close(self):
         if self.ser != 'None':
             self.ser.close()
-        tk.quit()
+        quit()
 
     def connect_arduino(self):
         ports = serial.tools.list_ports.comports()
@@ -192,6 +192,40 @@ class App:
         array[1::5]
         return array
 
+    def face_to_dotmap(self,frame,rects):
+        for (i,rect) in enumerate(rects):
+            (x1,y1,w,h) = self.find_rect(rect)
+            shape = self.predictor(frame,rect)
+            shape2 = self.shape_to_np_jaw(shape,x1,y1,w,h)
+            shape = face_utils.shape_to_np(shape)
+            blank_image = np.zeros(frame.shape, dtype=np.uint8)
+            channels =  frame.shape[2]
+            ignore_color = (255,)*channels
+            cv2.fillPoly(blank_image, shape2, ignore_color)
+            masked_img = cv2.bitwise_and(frame,blank_image)
+
+            gray_mask = cv2.cvtColor(masked_img, cv2.COLOR_BGR2GRAY)
+
+            invert_mask = cv2.bitwise_not(gray_mask)
+
+            img_blur = cv2.blur(invert_mask, (10,10))
+            #img_blur = cv2.bilateralFilter(invert_mask,9,75,75)
+            result = self.dodge(gray_mask,img_blur)
+            edge = cv2.Canny(result,100,200)
+            box = edge[rect.top():rect.bottom(),rect.left():rect.right()]
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            blank_image2 = np.zeros(frame.shape,dtype=np.uint8)
+            blank_image2 = cv2.cvtColor(blank_image2, cv2.COLOR_BGR2GRAY)
+
+            x_off = (blank_image2.shape[1]//2) - (box.shape[1]//2)
+            y_off = (blank_image2.shape[0]//2) - (box.shape[0]//2)
+            blank_image2[y_off:y_off+box.shape[0],x_off:x_off+box.shape[1]] = box
+
+#            cv2.imwrite("output"+".jpg",blank_image2)
+
+            coords = np.argwhere(blank_image2 == 255)
+            return coords
+
 
 
     def capture(self):
@@ -204,16 +238,16 @@ class App:
             if len(rects) == 0:
                 self.show_info("No faces detected!")
             else:
-                coords = Face_Processing.face_to_dotmap(frame,rects)
+                coords = self.face_to_dotmap(frame,rects)
                 x_array = self.sort_x(coords)
                 y_array = self.sort_y(coords)
 
-                x_array = [arr for i,arr in enumerate(x_array) if i % 5 == 0]
-                y_array = [arr for i,arr in enumerate(y_array) if i % 5 == 0]
+                x_array = [arr for i,arr in enumerate(x_array) if i % 3 == 0]
+                y_array = [arr for i,arr in enumerate(y_array) if i % 3 == 0]
                 coord_array = np.column_stack((x_array,y_array))
 
-                plt.plot(x_array,y_array,"ro")
-                plt.show()
+#                plt.plot(x_array,y_array,"ro")
+#                plt.show()
                 g_code = G_Code_Generator.main('face',coord_array)
                 self.send_code(g_code)
 

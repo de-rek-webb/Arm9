@@ -61,16 +61,20 @@ def plot_signal(signal,filename):
     """Plot the signal."""
     plt.figure(figsize=(11,8))  # Create plot and set size in inches
     if filename == 'face':
-        plt.scatter(signal[:,0], signal[:,1], color='black')  # Create a plot of the signal
+        filename = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir,'Output_Figures',filename))
+        plt.scatter(signal[:,0], signal[:,1], color='white')  # Create a plot of the signal
+        print("should be plotting face")
     elif filename == 'sound':
         filename = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir,'Output_Figures',filename))
-        plt.plot(signal[:,0], signal[:,1], color='black')  # Create a plot of the signal
+        plt.plot(signal[:,0], signal[:,1], color='white')  # Create a plot of the signal
+
     plt.savefig('{}.png'.format(filename), transparent=True, bbox_inches=0, pad_inches=0)  # Save plot as png
 
 def main(mode,array=None):
     """Main function of the program.
     mode = 'sound', 'face', or 'demo'
     array = numpy array conatining x,y coordinates to be plotted"""
+    print("In GCode")
     dirname = os.path.dirname(__file__)
     g_code = []    # List to hold g-code commands
     g_code.append('G20')    # Inches
@@ -85,8 +89,8 @@ def main(mode,array=None):
         array = scale_image(array,8.5,11)
         g_code += dot_image(array)
     g_code.append('M02')
-
-    plot_signal(array,mode)
+    if mode != 'demo':
+        plot_signal(array,mode)
 
     # Print the g_code to a text file
     f = open(os.path.abspath(os.path.join(dirname,os.pardir,'Txt_Docs','gcode.txt')),'w')  #
