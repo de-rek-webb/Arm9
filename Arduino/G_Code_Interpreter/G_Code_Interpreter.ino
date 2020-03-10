@@ -33,6 +33,7 @@ M72
 #define STEP_PIN3         4 // Step 3
 #define MS1               9 // MS1 Select Bit
 #define MS2               10 // MS2 Select Bit
+#define BUTTON            11 //Instrument Change re-enable
 
 
 
@@ -68,6 +69,7 @@ void setup() {
   pinMode(DIR_PIN2, OUTPUT);
   pinMode(STEP_PIN3, OUTPUT);
   pinMode(DIR_PIN3, OUTPUT);
+  pinMode(BUTTON, INPUT_PULLUP);
   digitalWrite(EN_PIN, LOW);      // Enable driver in hardware
   digitalWrite(MS1, HIGH);        // Set MS1:2 to desired microstep setting
   digitalWrite(MS2, HIGH);        // 00: 1/8, 01: 1/2, 10: 1/4, 11: 1/16
@@ -326,8 +328,8 @@ void cartesiantopolar(){ //Takes desired x and y and converts to desired angles
     
   }else if( desiredx < 0 && desiredy >= 0 ){
 
-    desiredangle1 = 180 - desiredangle1;
-    desiredangle2 = 360 - desiredangle2;
+    desiredangle2 = desiredangle2;
+    desiredangle1 = (360 - desiredangle2) + (180 - desiredangle1) - 180;
     
   }else if( desiredx >= 0 && desiredy < 0 ){
 
@@ -577,8 +579,9 @@ void followinstructions(){
 
     movemotor( 5 * 2238, "Stepper #3" ); //Moves pen (5) steps (up?)
 
-    Serial.println( "Waiting 10 seconds for pen/pencil change..." );
-    delay(10000); //Delays 10 seconds to allow for pen change
+    Serial.println( "Waiting re-enable button..." );
+    while (digitalRead(BUTTON) != LOW){
+    }
 
     movemotor( -5 * 2238, "Stepper #3" ); //Moves pen (down?)
     
