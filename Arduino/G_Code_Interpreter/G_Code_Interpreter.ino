@@ -231,6 +231,7 @@ void takeinstructions() {
       Serial.print( "Your current Y coordinate = " );
       Serial.println( currenty );
       Serial.println();
+      Serial.println("$");
       
       return;
       
@@ -265,6 +266,7 @@ void takeinstructions() {
       Serial.print( "Your current Y coordinate = " );
       Serial.println( currenty );
       Serial.println();
+      Serial.println("$");
       
       return;
       
@@ -272,7 +274,12 @@ void takeinstructions() {
 
       //Bounces if code doesn't start with an M or a G
       Serial.print("Not a G Code command");
+
+      while( thisChar != '\n' ){ //Check for specific G code following 'M'
+        thisChar = Serial.read();
+      }
       Serial.println();
+      Serial.println("$");
       return;
     }
   }

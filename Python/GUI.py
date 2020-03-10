@@ -108,12 +108,19 @@ class App:
 
     def send_code(self,g_code = None):
         """Send g-code line by line over serial port"""
+        if self.ser == 'None':
+            print("Cannot send G-Code, No Arduino Connected\n")
+            return
         for i in g_code:
             self.ser.write((i + '\n').encode('utf-8'))
-            time.sleep(0.5)
-            while self.ser.in_waiting:
-                print(self.ser.readline())
-        return
+            time.sleep(0.1)
+            command = self.ser.readline()
+            while command != b'$\r\n':
+                try:
+                    print(command.decode('ascii'))
+                except:
+                    print(command)
+                command = self.ser.readline()
 
     def demo(self):
         g_code = G_Code_Generator.main('demo')
