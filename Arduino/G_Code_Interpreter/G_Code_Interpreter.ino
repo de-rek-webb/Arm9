@@ -590,7 +590,9 @@ void followinstructions(){
     movemotor( 5 * 2238, "Stepper #3" ); //Moves pen (up?)
 
     Serial.println( "Please insert maraca!" );
-    delay(10000); //Delays 10 seconds to allow for pen change
+    Serial.println( "Waiting re-enable button..." );
+    while (digitalRead(BUTTON) != LOW){
+    }
 
     movemotor( -5 * 2238, "Stepper #3" ); //Moves pen (down?)
 
