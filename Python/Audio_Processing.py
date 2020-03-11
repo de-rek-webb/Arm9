@@ -46,16 +46,10 @@ def simplify_signal(inputSignal):
 
     #Take one data point for every 0.1 seconds
     for i in range(1,len(inputSignal)):
-        if i % 441 == 0:
+        if i % 200 == 0:
             simpleAudio = np.append(simpleAudio,inputSignal[i])
             x+=1
             x_vals = np.append(x_vals,x)
-
-    # # Scale amplitude by a factor of 5 so that graph will be at least 5in high
-    # max = np.amax(simpleAudio)
-    # scaling = 5/max
-    # simpleAudio = simpleAudio*scaling
-    # simpleAudio += 2
 
     outputSignal = np.column_stack((x_vals,simpleAudio)) # Concatenate x and y values
     return outputSignal

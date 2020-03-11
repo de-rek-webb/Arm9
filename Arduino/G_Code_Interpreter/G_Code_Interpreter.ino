@@ -32,8 +32,7 @@ M72
 #define DIR_PIN3          5 // Direction 3
 #define STEP_PIN3         4 // Step 3
 #define MS1               9 // MS1 Select Bit
-#define MS2               10 // MS2 Select Bit
-#define BUTTON            11 //Instrument Change re-enable
+#define MS2               10 // MS2 Select Bits
 
 
 
@@ -69,7 +68,6 @@ void setup() {
   pinMode(DIR_PIN2, OUTPUT);
   pinMode(STEP_PIN3, OUTPUT);
   pinMode(DIR_PIN3, OUTPUT);
-  pinMode(BUTTON, INPUT_PULLUP);
   digitalWrite(EN_PIN, LOW);      // Enable driver in hardware
   digitalWrite(MS1, HIGH);        // Set MS1:2 to desired microstep setting
   digitalWrite(MS2, HIGH);        // 00: 1/8, 01: 1/2, 10: 1/4, 11: 1/16
@@ -393,8 +391,8 @@ void cartesiantopolar(){ //Takes desired x and y and converts to desired angles
 //    angledifference2 = -1 * (360 - angledifference2);
 //  }
 
-  steps1 = 35.52 * angledifference1; //Calculates the amount of steps that each motor needs to move to achieve proper angle
-  steps2 = 35.52 * angledifference2; //Assumes NEMA 17 motors with 200 steps/rev microstepped by 1/16 so 35.52 microsteps per degree (4:1 gear ratio)
+  steps1 = 71.04 * angledifference1; //Calculates the amount of steps that each motor needs to move to achieve proper angle
+  steps2 = 71.04 * angledifference2; //Assumes NEMA 17 motors with 200 steps/rev microstepped by 1/16 so 35.52 microsteps per degree (4:1 gear ratio)
   steps3 = desiredz - currentz;
 
   //Informs user of desired action so that they can check against actual action
@@ -579,9 +577,7 @@ void followinstructions(){
 
     movemotor( 5 * 2238, "Stepper #3" ); //Moves pen (5) steps (up?)
 
-    Serial.println( "Waiting re-enable button..." );
-    while (digitalRead(BUTTON) != LOW){
-    }
+    delay( 10000 );
 
     movemotor( -5 * 2238, "Stepper #3" ); //Moves pen (down?)
     
@@ -590,9 +586,8 @@ void followinstructions(){
     movemotor( 5 * 2238, "Stepper #3" ); //Moves pen (up?)
 
     Serial.println( "Please insert maraca!" );
-    Serial.println( "Waiting re-enable button..." );
-    while (digitalRead(BUTTON) != LOW){
-    }
+
+    delay( 10000 );
 
     movemotor( -5 * 2238, "Stepper #3" ); //Moves pen (down?)
 

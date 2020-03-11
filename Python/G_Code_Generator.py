@@ -37,6 +37,7 @@ def dot_image(array):
     for i in range(0,np.size(array,axis=0)):
         g_code.append('G00 X' + str(array[i,0]) + ' Y' + str(array[i,1]) + ' Z0.25')
         g_code.append('G00 X' + str(array[i,0]) + ' Y' + str(array[i,1]) + ' Z0.0')
+        g_code.append('G00 X' + str(array[i,0]) + ' Y' + str(array[i,1]) + ' Z0.25')
     return g_code
 
 def line_image(array):
@@ -48,11 +49,14 @@ def line_image(array):
 
 def scale_image(array,height,width):
     """Scale array to fit the page"""
+    scaling = np.amin(array, axis=0)    # First center imaage at origin
+    array[:,0] -= scaling[0]
+    array[:,1] -= scaling[1]
     scaling = np.amax(array, axis=0)    # Get maximum x and y values
     scaling[0] = width/scaling[0]   # Scale by provided page width
     scaling[1] = height/scaling[1]  # Scale by provided page height
     array *= scaling    # Scale array
-    array[:,1] +=2  # Shift y values by two to account for distance from arm to paper
+    array[:,1] +=5  # Shift y values to account for distance from arm to paper
     array[:,0] -= (width/2)
 
     return np.round(array,3)    # Round array to 3 decimal places
@@ -83,10 +87,10 @@ def main(mode,array=None):
         with open(os.path.abspath(os.path.join(dirname,os.pardir,'Txt_Docs','demo.txt')),'r+') as f: # Read demo g_code from file, remove '\n'
             g_code += f.read().splitlines()
     elif mode == 'sound':
-        array = scale_image(array,8,10)
+        array = scale_image(array,6,8)
         g_code += line_image(array)
     elif mode == 'face':
-        array = scale_image(array,8.5,11)
+        array = scale_image(array,6,8)
         g_code += dot_image(array)
     g_code.append('M02')
     if mode != 'demo':
